@@ -373,3 +373,117 @@ new CopyWebpackPlugin([
             copyUnmodified: true
         })
 ```
+
+##### toTpe
+
+| Name | Type | Default | Description | 
+| :---: | :---: | :---: | :---: |
+| 'dir' | {string} | undefined | if from is derectory, to has no ectension or ends in '/' | 
+| 'file' | {string} | undefined | if to has extendsion or from is file |
+| 'template' | {string} | undefined | if contains a template pattern |
+
+
+
+
+#### ExtractTextWebpackPlugin
+
+Extract text from a bundle,or bundles,into a separate file.
+
+Usage
+
+> :warning: Since webpack v4 the extract-text-webpack-plugin should not be used for css.Use mini-css-extract-plugin instead.
+
+It moves all the required *.css modules in entry chunks into a seperate CSS file.So your styles are no longer inlined into the JS bundle,but in a separate CSS fil(Styles.css). If your total stylesheet volume is big, it will be faster because the CSS bundle is loaded in parallel to the JS bundle.
+
+| Advantages | Caveats |
+| :---: | :---: |
+| Fewer style tages(older IE has a limit) | Additional HTTP request |
+| CSS SourceMap(with devtool: "source-map" and extract-text-webpack-plugin?sourceMap) | longer compilation time | 
+| CSS requested in parallel | No runtime public path modifucation |
+| CSS cached separate | No Hot Module Replacement | 
+| Faster runtime (less code and DOM operations) | ... |
+
+> :warning: ExtractTextPlugin generates a file per entry,so you must use [name], [id] or [contenthash] when using multiple entries.
+
+#### extract 
+
+ExtractTextPlugin.extract(options: loader | object)
+
+creates an extracting loader from an existing loader.Supports loaders of type { loader: [name]-loader -> {string}, options: {} -> {object}}.
+
+| Name | Type | Description |
+| :--: | :---: | :---: |
+| options.use | {String}/{Array}/{Object} | Loader(s) that should be used for converting the resource to a CSS exporting module(required) |
+| options.fallback | {String} / {Array} ? {Object} | loader(e.g 'style-loader' ) that should be used when the CSS is not extracted (i.e in an additional chunk when allChunks: false)| 
+| options.publicPath | { String } | Override the publicPath setting for this loader |
+
+#### url Resolving 
+
+if you are finding that urls are not resolving properly when you run webpack. You can expand your loader functionality with options.The url: dalse property allows your poths resolved without any changes.
+
+```
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+module.export = {
+    module: {
+        rules: [
+            {
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                // if you are having trouble with url not resolving add this setting.
+                                url: false,
+                                minimize: true,
+                                sourceMap: true
+                            }
+                        },
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        }
+                    ]
+                })
+            }
+        ]
+    }
+}
+```
+
+#### Modify filename
+
+filename parameter could be Function. It passes getPath to process the format like css/[name].css and returns the real file name, css/js/a.css. You can replace css/js woth css then you will get new path css/a.css.
+
+```
+entry: {
+    "js/a": "./a",
+},
+plugins: [
+    new ExtractTextPlugin({
+        filename: (getpath) => {
+            return getPath('css/[name].css').replace('css/js', 'css');
+        },
+        allChunks: true
+    })
+]
+```
+
+----
+
+```
+new webpack.DllReferencePlugin({
+    context: path.join(__dirname, '../src'),
+    /**
+        * 在这里引入 manifest 文件
+        */
+    manifest: vendorManifest
+})
+```
+
+[深入浅出的webpack构建工具---DllPlugin DllReferencePlugin提高构建速度(七)](http://www.cnblogs.com/tugenhua0707/p/9520780.html)
+[Webpack DllPlugin 和 DllReferencePlugin](https://segmentfault.com/a/1190000009723203#articleHeader0)
