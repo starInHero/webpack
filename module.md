@@ -486,6 +486,7 @@ new webpack.DllReferencePlugin({
 ```
 
 [深入浅出的webpack构建工具---DllPlugin DllReferencePlugin提高构建速度(七)](http://www.cnblogs.com/tugenhua0707/p/9520780.html)
+
 [Webpack DllPlugin 和 DllReferencePlugin](https://segmentfault.com/a/1190000009723203#articleHeader0)
 
 DLLPlugin 和 DLLReferencePlugin 插件作用：
@@ -496,16 +497,17 @@ DLLPlugin 和 DLLReferencePlugin 插件作用：
 
 1. CommonsChunkPlugin
 
-每次打包的时候还是会去处理一些第三方依赖库，只是它能把第三方库文件和我们代码分开掉，生成一个独立的 js 文件。但是他还是不能提高打包的速度。
+    每次打包的时候还是会去处理一些第三方依赖库，只是它能把第三方库文件和我们代码分开掉，生成一个独立的 js 文件。但是他还是不能提高打包的速度。
 
 2. DLLPlugin
 
-能把第三方库代码分离开，并且每次文件更改的时候，它只会打包该项目自身的代码。所以打包速度会更快。
+    能把第三方库代码分离开，并且每次文件更改的时候，它只会打包该项目自身的代码。所以打包速度会更快。
 
-DLLPlugin 这个插件是在一个额外独立的 webpack 设置中创建一个只有 dll 的 bundle，也就是说我们在项目根目录下除了有 webpack.config.js，还会新建一个 webpack.dll.config.js 文件。 webpack.dll.config.js 作用是把所有的第三方库依赖打包到一个 bundle 的 dll 文件里面，还会生成一个名为 manifest.json 文件。
-该 manifest.json 的作用是用来让 DLLRefrencePlugin 映射到相关的依赖上去的。
+    DLLPlugin 这个插件是在一个额外独立的 webpack 设置中创建一个只有 dll 的 bundle，也就是说我们在项目根目录下除了有 webpack.config.js，还会新建一个 webpack.dll.config.js 文件。 webpack.dll.config.js 作用是把所有的第三方库依赖打包到一个 bundle 的 dll 文件里面，还会生成一个名为 manifest.json 文件。
+    该 manifest.json 的作用是用来让 DLLRefrencePlugin 映射到相关的依赖上去的。
 
-DllReferencePlugin 这个插件实在 webpack.config.js 中使用的，这个插件的作用是把刚刚在 webapck.dll.config.js 中打包生成的 dll 文件引用到需要的预编译的依赖上来。也就是说在 webpack.dll.config.js 中打包后比如会生成 vendor.dll.js 文件和 vendor-manifest.json 文件， wendor.dll.js 文件包含所有的第三方库文件，vendor-manifest.json 文件会包含所有库代码的一个索引，当在使用 webpack.config.js 文件打包 DLLRefencePlugin 插件的时候，会使用该 DLLReferencePlugin 插件读取 vendor-manifest.json 文件，看看是否有该第三方库。vendor-manifest.json 文件就是有一个第三方库的一个映射而已。
+3. DllReferencePlugin
+
+    DllReferencePlugin 这个插件是在 webpack.config.js 中使用的，这个插件的作用是把刚刚在 webapck.dll.config.js 中打包生成的 dll 文件引用到需要的预编译的依赖上来。也就是说在 webpack.dll.config.js 中打包后比如会生成 vendor.dll.js 文件和 vendor-manifest.json 文件， wendor.dll.js 文件包含所有的第三方库文件，vendor-manifest.json 文件会包含所有库代码的一个索引，当在使用 webpack.config.js 文件打包 DLLRefencePlugin 插件的时候，会使用该 DLLReferencePlugin 插件读取 vendor-manifest.json 文件，看看是否有该第三方库。vendor-manifest.json 文件就是有一个第三方库的一个映射而已。
 
 所以说，第一次使用 webpack.dll.config.js 文件会对第三方库打包，打包完成后就不会再打包它了，然后每次运行 webpack.config.js 文件的时候，都会打包项目中本身的文件代码，当需要使用第三方依赖的时候，会使用 DLLReferencePlugin 插件去读取第三方依赖库。所以说它的打包速度会得到一个很大的提升。
-
