@@ -509,3 +509,59 @@ DllReferencePlugin 这个插件实在 webpack.config.js 中使用的，这个插
 
 所以说，第一次使用 webpack.dll.config.js 文件会对第三方库打包，打包完成后就不会再打包它了，然后每次运行 webpack.config.js 文件的时候，都会打包项目中本身的文件代码，当需要使用第三方依赖的时候，会使用 DLLReferencePlugin 插件去读取第三方依赖库。所以说它的打包速度会得到一个很大的提升。
 
+--- 
+
+##### HtmlWebpackPlugin
+
+The HtmlWebpackPlugin simplifies creation of HTML files to Serve your webpack bundles.This is especially useful for webpack bundles that include a hash in the filename which changes every compilation. You can either let the plugin generate an HTML file for you. supply your own template using lodash templates,or use your own loader.
+
+**webpack.config.js**
+
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.export = {
+    entry: 'index.js',
+    output: {
+        path: __dirpath + '/dist',
+        filename: 'index_bundle.js'
+    },
+    plugins: [
+        new HtmlWebpackPlugin()
+    ]
+}
+```
+
+This will generate a file dist/index.html containing the following
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+    <script src="index_bundle.js"></script>
+  </body>
+</html>
+```
+
+```
+let htmlWebpackConfig = {
+    title: key,
+    filename: key + '.html',
+    template: path.join(__dirname, '../layout/base.js'),
+    templateParameters: {
+        html: htmlPath,
+        baseDir: path.join(__dirname, '..')
+    },
+    chunks: key !== 'candidate-detail-share/page/main'?['instantMessaging/page/main', key]:[key],
+    inject: 'body',
+    hash: false,
+    alwaysWriteToDisk: true,
+    favicon: path.resolve(__dirname, '../src/common/static/favicon.ico')
+};
+```
+
+| 
