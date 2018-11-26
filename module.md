@@ -1,18 +1,20 @@
-```
+# webpack
+
+```javascript
 webpackConfig.rules = [{
-			test: /\.(png|jpg|gif|eot|svg|ttf|woff)$/,
-			use: [{
-				loader: 'url-loader',
-				options: {
-					limit: 20,
-					name: '[path][name].[ext]',
-					context: 'src/'
-				}
-			}]
-		}]
+        test: /\.(png|jpg|gif|eot|svg|ttf|woff)$/,
+        use: [{
+            loader: 'url-loader',
+            options: {
+                limit: 20,
+                name: '[path][name].[ext]',
+                context: 'src/'
+            }
+        }]
+    }]
 ```
 
-#### url-loader
+## url-loader
 
 url-loader 功能类似于 file-loader，但是在文件大小（单位 byte）低于指定的限制时，可以返回一个 DataURL。
 
@@ -24,40 +26,40 @@ url-loader 功能类似于 file-loader，但是在文件大小（单位 byte）�
 
 ----
 
-```
+```javascript
 externals: {
-		jquery: 'jQuery'
-	}
+    jquery: 'jQuery'
+}
 ```
 
 防止将某些 import 的包打包到 bundle 中，而是在运行时（runtime）再去从外部获取这些*拓展依赖(external dependencies)。*
 
-###### String 
+### String
+
 属性名称是 jquery ，表示应该排除 ``import $ from jquery`` 中的 jquery 模块。为了替换这个模块，jQuery 的值将被用来检索一个全局的 jquery 变量。换句话说，当设置一个字符串时，它将被视为全局的。
 
----
+----
 
-```
+```json
 stats: {
-		// minimal logging
-		assets: false,
-		colors: true,
-		version: false,
-		hash: false,
-		timings: false,
-		chunks: false,
-		chunkModules: false,
-		children: false
-	}
+// minimal logging
+    assets: false,
+    colors: true,
+    version: false,
+    hash: false,
+    timings: false,
+    chunks: false,
+    chunkModules: false,
+    children: false
+}
 ```
 
 不希望使用 quiet 或 noInfo 这样的不显示信息，而是有不想得到全部的信息，只是想获取某部分 budle 的信息，使用 stats 选项是比较好的方式。
 
 > 对于 webpack-dev-server，这个属性要放在 devServer 对象里
-
 > 在使用 Node.js API 时，此选项无效。
 
-###### Stats 
+#### Stats
 
 object string
 
@@ -66,14 +68,14 @@ stats: 'error-only'
 | Preset | Alternative | Description |
 | :---: | :---: | :---: |
 | "error-only" | none | 只在发生错误时输出 |
-| "minimal" | none | 只有发生错误或有新的编译时输出 | 
+| "minimal" | none | 只有发生错误或有新的编译时输出 |
 | "none" | false | 没有输出 |
-| "normal" | true | 标准输出 | 
+| "normal" | true | 标准输出 |
 | "verbose" | none | 全部输出 |
 
 对于更精细的控制，下列这些选项可以准确的控制并展示你想要的信息。请注意，此对象中的所有选项都是可选的。
 
-```
+```javascript
 module.exports = {
   //...
   stats: {
@@ -203,15 +205,15 @@ module.exports = {
 }
 ```
 
----
+----
 
 ##### webpack-concat-plugin
 
 want to concat the static files and inject into html without webpack JSONP code wrapper。
 
-```
+```javascript
 const ConcatPlugin = require('webpack-concat-plugin');
- 
+
 new ConcatPlugin({
     ...see options
     // examples
@@ -229,16 +231,16 @@ new ConcatPlugin({
 
 ### Options
 
-**uglify [boolean | object] default: false**
+#### uglify [boolean | object] default: false
 
 if true the output file will be uglified
 or set uglifyjs options to customize the output
 
-**sourceMap [boolean] default: false**
+#### sourceMap [boolean] default: false
 
-if true,will output sourcemap 
+if true,will output sourcemap
 
-**name[string] default: "result"**
+#### name[string] default: "result"**
 
 it's useful when you want to inject to html-webpack-plugin manully
 
@@ -247,15 +249,15 @@ it's useful when you want to inject to html-webpack-plugin manully
 if set,will be used as the public path of the script tag.
 if set to false,will use relativePath.
 
-**outputPath[string]**
+#### outputPath[string]
 
 if set,will be used as the output directory of the file.
 
-**fileName [string] default: [name].js**
+#### fileName [string] default: [name].js
 
 if set,will be used as the output fileName
 
-**filesToconcat[array] required**
+#### filesToconcat[array] required
 
 supported path patterns:
 
@@ -267,7 +269,7 @@ supported path patterns:
 
 how to auto inject to html-webpack-plugin(only if html-webpack-plugin set inject option not to be false)
 
-**attributes[object]**
+#### attributes[object]
 
 if set,will be used as the extra attributes of the script tag.
 
@@ -277,33 +279,33 @@ if set,will be used as the extra attributes of the script tag.
 
 copies individual files or entire diectories to the build directory.
 
-```
+```javascript
 new CopyWebpackPlugin([{
-			from: path.join(__dirname, '../src/common/static/js/jquery.min.js'),
-			to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/jquery.min.js')
-		},{
-			from: path.join(__dirname, '../src/common/static/js/pdfjs/'),
-			to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/pdfjs/')
-        },{
-            from: path.join(__dirname, '../src/common/static/js/es6-promise.min.js'),
-            to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/es6-promise.min.js')
-		},{
-			from: path.join(__dirname, '../src/common/static/js/At.js/'),
-			to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/At.js/')
-		},{
-			from: path.join(__dirname, '../src/common/static/js/Caret.js/'),
-			to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/Caret.js/')
-		},{
-			from: path.join(__dirname, '../src/common/static/js/datetimepicker/'),
-			to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/datetimepicker/')
-		}])
+        from: path.join(__dirname, '../src/common/static/js/jquery.min.js'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/jquery.min.js')
+    },{
+        from: path.join(__dirname, '../src/common/static/js/pdfjs/'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/pdfjs/')
+    },{
+        from: path.join(__dirname, '../src/common/static/js/es6-promise.min.js'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/es6-promise.min.js')
+    },{
+        from: path.join(__dirname, '../src/common/static/js/At.js/'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/At.js/')
+    },{
+        from: path.join(__dirname, '../src/common/static/js/Caret.js/'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/Caret.js/')
+    },{
+        from: path.join(__dirname, '../src/common/static/js/datetimepicker/'),
+        to: path.join(__dirname, (isProd ?'../static':'../dist') + '/common/static/js/datetimepicker/')
+    }])
 ```
 
 A pattern looks like: { from: 'source', to: 'dest' }
 
 Or,in the simple case of just a from with default destination,you can use a string primitive instead of an object: 'source'
 
-```
+```javascript
 new CopyWebpackPlugin([
             // {output}/file.txt
             { from: 'from/file.txt' },
@@ -357,7 +359,7 @@ new CopyWebpackPlugin([
             }
         ], {
             ignore: [
-                // Doesn't copy any files with a txt extension    
+                // Doesn't copy any files with a txt extension
                 '*.txt',
 
                 // Doesn't copy any file, even if they start with a dot
@@ -376,14 +378,11 @@ new CopyWebpackPlugin([
 
 ##### toTpe
 
-| Name | Type | Default | Description | 
+| Name | Type | Default | Description |
 | :---: | :---: | :---: | :---: |
-| 'dir' | {string} | undefined | if from is derectory, to has no ectension or ends in '/' | 
+| 'dir' | {string} | undefined | if from is derectory, to has no ectension or ends in '/' |
 | 'file' | {string} | undefined | if to has extendsion or from is file |
 | 'template' | {string} | undefined | if contains a template pattern |
-
-
-
 
 #### ExtractTextWebpackPlugin
 
@@ -398,14 +397,14 @@ It moves all the required *.css modules in entry chunks into a seperate CSS file
 | Advantages | Caveats |
 | :---: | :---: |
 | Fewer style tages(older IE has a limit) | Additional HTTP request |
-| CSS SourceMap(with devtool: "source-map" and extract-text-webpack-plugin?sourceMap) | longer compilation time | 
+| CSS SourceMap(with devtool: "source-map" and extract-text-webpack-plugin?sourceMap) | longer compilation time |
 | CSS requested in parallel | No runtime public path modifucation |
 | CSS cached separate | No Hot Module Replacement | 
 | Faster runtime (less code and DOM operations) | ... |
 
 > :warning: ExtractTextPlugin generates a file per entry,so you must use [name], [id] or [contenthash] when using multiple entries.
 
-#### extract 
+#### extract
 
 ExtractTextPlugin.extract(options: loader | object)
 
@@ -417,11 +416,11 @@ creates an extracting loader from an existing loader.Supports loaders of type { 
 | options.fallback | {String} / {Array} ? {Object} | loader(e.g 'style-loader' ) that should be used when the CSS is not extracted (i.e in an additional chunk when allChunks: false)| 
 | options.publicPath | { String } | Override the publicPath setting for this loader |
 
-#### url Resolving 
+#### url Resolving
 
 if you are finding that urls are not resolving properly when you run webpack. You can expand your loader functionality with options.The url: dalse property allows your poths resolved without any changes.
 
-```
+```javascript
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.export = {
@@ -459,7 +458,7 @@ module.export = {
 
 filename parameter could be Function. It passes getPath to process the format like css/[name].css and returns the real file name, css/js/a.css. You can replace css/js woth css then you will get new path css/a.css.
 
-```
+```javascript
 entry: {
     "js/a": "./a",
 },
@@ -475,7 +474,7 @@ plugins: [
 
 ----
 
-```
+```javascript
 new webpack.DllReferencePlugin({
     context: path.join(__dirname, '../src'),
     /**
@@ -510,15 +509,15 @@ DLLPlugin 和 DLLReferencePlugin 插件作用：
 
     DllReferencePlugin 这个插件是在 webpack.config.js 中使用的，这个插件的作用是把刚刚在 webapck.dll.config.js 中打包生成的 dll 文件引用到需要的预编译的依赖上来。也就是说在 webpack.dll.config.js 中打包后比如会生成 vendor.dll.js 文件和 vendor-manifest.json 文件， wendor.dll.js 文件包含所有的第三方库文件，vendor-manifest.json 文件会包含所有库代码的一个索引，当在使用 webpack.config.js 文件打包 DLLRefencePlugin 插件的时候，会使用该 DLLReferencePlugin 插件读取 vendor-manifest.json 文件，看看是否有该第三方库。vendor-manifest.json 文件就是有一个第三方库的一个映射而已。
 
---- 
+----
 
 ##### HtmlWebpackPlugin
 
 The HtmlWebpackPlugin simplifies creation of HTML files to Serve your webpack bundles.This is especially useful for webpack bundles that include a hash in the filename which changes every compilation. You can either let the plugin generate an HTML file for you. supply your own template using lodash templates,or use your own loader.
 
-**webpack.config.js**
+###### webpack.config.js
 
-```
+```javascript
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.export = {
@@ -535,7 +534,7 @@ module.export = {
 
 This will generate a file dist/index.html containing the following
 
-```
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -548,7 +547,7 @@ This will generate a file dist/index.html containing the following
 </html>
 ```
 
-```
+```javascript
 let htmlWebpackConfig = {
     title: key,
     filename: key + '.html',
@@ -564,5 +563,3 @@ let htmlWebpackConfig = {
     favicon: path.resolve(__dirname, '../src/common/static/favicon.ico')
 };
 ```
-
-| 
