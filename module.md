@@ -563,3 +563,38 @@ let htmlWebpackConfig = {
     favicon: path.resolve(__dirname, '../src/common/static/favicon.ico')
 };
 ```
+
+----
+
+##### HtmlWebpackIncludeAssetsPlugin 的作用
+
+```javascript
+// 此处是将dll打包出来的包插入到html里
+let appendAssertConfig = {
+    assets: vendorDir,
+    append: false
+};
+webpackConfig.plugins.push(new HtmlWebpackIncludeAssetsPlugin(appendAssertConfig));
+```
+
+##### Option
+
+The available options are:
+
+- jsExtensios: string or array
+
+    Specifies the file extendsion to use to determine if asserts are script assets. Default is ['.js']
+
+- assets: string or array or object
+    Asserts that will be putput into your html-webpack-plugin template.
+    To specify just one asset, simply pass a string or object. To specify multiple, pass an array of strings or objects.
+    If the assert path is static and ends in one of the jsExtensions or cssExtensions values, simply use a string value.
+    If the assert is not static or does not have a valid extension, you can instead pass an object with the asset href/src, type is one of js or css, and glob is a wildcard to use to match all files in the path(uses the glob package). The globPath can be used to simcify the directory from which the glob should search for filename matches (the default is to use pat within webpack's output directory).
+
+    The attributes property may be used to add additional attributes to the link pr script element that is injected. The keys of this object are attrubute are attribute names and the values(string or boolean key values are allowed).
+
+    The assetPath property may be used to specify the full path to the included asset. This can be useful as it will trigger a recompilation after the assets have changed when using webpack-dev-server or webpack-dev-middleware in development mode.
+
+- append: boolean
+
+    Specifying whether the assets should be prepended(false)before any existing assets, or appended(true)after them.
